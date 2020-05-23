@@ -16,6 +16,7 @@ public interface WareDao {
     void deleteWareById(String id);
     void insertWare(Ware ware);
     Ware selectWare(String id);
+    List<Ware> selectAllWare();
     List<Ware> selectWareByPage(HashMap<String,Object> map);
     int selectCountByWare();
    void updateWare(Ware ware);

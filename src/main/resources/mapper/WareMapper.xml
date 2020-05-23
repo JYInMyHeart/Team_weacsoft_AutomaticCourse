@@ -190,4 +190,7 @@
       or site like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
     </if>
   </select>
+  <select id="selectAllWare" resultMap="BaseResultMap">
+    select * from ware
+  </select>
 </mapper>
