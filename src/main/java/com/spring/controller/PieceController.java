@@ -168,8 +168,8 @@ public class PieceController {
     public ResponseEntity selectBySupplier(@RequestParam String supplierName,
                                            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                           @RequestParam(value = "sort", required = false) String sort,
-                                           @RequestParam(value = "asc", required = false) String asc) throws Exception {
+                                           @RequestParam(value = "sort", required = false,defaultValue = "id") String sort,
+                                           @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -195,8 +195,8 @@ public class PieceController {
     public ResponseEntity selectByDealer(@RequestParam String dealerName,
                                          @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                          @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                         @RequestParam(value = "sort", required = false) String sort,
-                                         @RequestParam(value = "asc", required = false) String asc) throws Exception {
+                                         @RequestParam(value = "sort", required = false,defaultValue = "id") String sort,
+                                         @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();

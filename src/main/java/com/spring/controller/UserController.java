@@ -257,9 +257,9 @@ public class UserController {
     @ResponseBody
     public ResponseEntity selectUser(@RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                      @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                     @RequestParam(value = "sort", required = false) String sort,
+                                     @RequestParam(value = "sort", required = false,defaultValue = "identityID") String sort,
                                      @RequestParam(value = "keyWord", required = false) String keyWord,
-                                     @RequestParam(value = "asc", required = false) String asc
+                                     @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc
     ) throws IOException {
         ResponseEntity responseData;
         PageBean<User> pagemsg = userService.selectUserByPage(size, page, sort, asc);
