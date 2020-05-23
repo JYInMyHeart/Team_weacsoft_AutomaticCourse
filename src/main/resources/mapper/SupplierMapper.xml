@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spring.dao.SupplierDao">
+  <resultMap id="BaseResultMap" type="com.spring.entity.Supplier">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    <result column="state" property="state" jdbcType="VARCHAR"/>
+    <result column="notes" property="notes" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertSupplier" parameterType="Supplier">
+    insert into supplier (id, name, phone, state, notes)
+    values (#{id}, #{name}, #{phone}, #{state}, #{notes})
+  </insert>
+  <select id="selectSupplier" resultType="Supplier">
+    select *
+    from supplier
+    where id = #{id}
+  </select>
+  <select id="selectSupplierByPage" parameterType="Map" resultMap="BaseResultMap">
+    select *
+    from supplier
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <select id="selectCountBySupplier" resultType="java.lang.Integer">
+    select count(*)
+    from supplier
+  </select>
+  <update id="updateSupplier" parameterType="Supplier">
+    update supplier
+    set name=#{name},
+        phone=#{phone},
+        state=#{state},
+        notes=#{notes}
+    where id = #{id}
+  </update>
+  <delete id="deleteSupplier" parameterType="Supplier">
+    delete
+    from supplier
+    where id = #{id}
+  </delete>
+  <select id="selectSupplierById" resultType="Supplier">
+    select *
+    from supplier
+    where id = #{id}
+  </select>
+  <select id="selectSupplierByName" resultMap="BaseResultMap">
+    select *
+    from supplier
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, `name`, phone, `state`, notes
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from supplier
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from supplier
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="Supplier">
+    <!--@mbg.generated-->
+    insert into supplier (id, `name`, phone,
+    `state`, notes)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+    #{state,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="Supplier">
+    <!--@mbg.generated-->
+    insert into supplier
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Supplier">
+    <!--@mbg.generated-->
+    update supplier
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Supplier">
+    <!--@mbg.generated-->
+    update supplier
+    set `name` = #{name,jdbcType=VARCHAR},
+    phone = #{phone,jdbcType=VARCHAR},
+    `state` = #{state,jdbcType=VARCHAR},
+    notes = #{notes,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

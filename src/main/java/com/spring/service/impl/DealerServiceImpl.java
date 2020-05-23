@@ -1,0 +1,89 @@
+package com.spring.service.impl;
+
+import com.spring.dao.DealerDao;
+import com.spring.entity.Dealer;
+import com.spring.entity.PageBean;
+import com.spring.entity.Supplier;
+import com.spring.service.DealerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+
+@Service("DealerService")
+@Transactional
+public class DealerServiceImpl implements DealerService {
+    @Autowired
+    DealerDao dealerDao;
+
+    @Override
+    public void insertDealer(Dealer dealer) {
+        dealerDao.insertSelective(dealer);
+    }
+
+    @Override
+    public void deleteDealer(String id) {
+         dealerDao.deleteDealer(id);
+    }
+
+    @Override
+    public void updateDealer(Dealer dealer) {
+        dealerDao.updateByPrimaryKeySelective(dealer);
+    }
+
+    @Override
+    public Dealer selectDealer(String id) {
+        return dealerDao.selectDealer(id);
+    }
+
+    @Override
+    public Dealer selectDealerById(String id) {
+        return dealerDao.selectDealerById(id);
+    }
+
+    @Override
+    public PageBean<Dealer> selectDealerByPage(int size, int page, String sort, String asc) {
+        HashMap<String,Object> map = new HashMap<String,Object>();
+        PageBean<Dealer> pageBean = new PageBean<Dealer>();
+        //封装当前页数
+        pageBean.setCurrPage(page);
+        //封装页数大小
+        pageBean.setPageSize(size);
+        //封装排序字段
+        pageBean.setPageSort(sort);
+        //封装排序规则
+        pageBean.setPageAsc(asc);
+
+        //封装总记录数
+        int totalCount = dealerDao.selectCountByDealer();
+        pageBean.setTotalCount(totalCount);
+
+        //封装总页数
+        double tc = totalCount;
+        Double num =Math.ceil(tc/size);//向上取整
+        pageBean.setTotalPage(num.intValue());
+
+
+        map.put("PageStart",(page-1)*size);
+        map.put("PageSize", pageBean.getPageSize());
+        map.put("PageSort", sort);
+        map.put("PageAsc", asc);
+
+        //封装每页显示的数据
+        List<Dealer> lists = dealerDao.selectDealerByPage(map);
+        pageBean.setLists(lists);
+        return pageBean;
+    }
+
+    @Override
+    public int selectCountByDealer() {
+        return dealerDao.selectCountByDealer();
+    }
+
+    @Override
+    public Dealer selectDealerNyName(String s) {
+        return dealerDao.selectDealerNyName(s);
+    }
+}

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spring.dao.UserDao">
+  <resultMap id="BaseResultMap" type="com.spring.entity.User">
+    <result column="identityID" property="identityID" jdbcType="VARCHAR"/>
+    <result column="time" property="time" jdbcType="VARCHAR"/>
+    <result column="username" property="username" jdbcType="VARCHAR"/>
+    <result column="password" property="password" jdbcType="VARCHAR"/>
+    <result column="age" property="age" jdbcType="INTEGER"/>
+    <result column="gender" property="gender" jdbcType="INTEGER"/>
+    <result column="phone" property="phone" jdbcType="VARCHAR"/>
+    <result column="salary" property="salary" jdbcType="INTEGER"/>
+    <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    <result column="authority" property="authority" jdbcType="INTEGER"/>
+    <result column="ware_id" property="ware_id" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectUserByIdentityId" resultType="User" parameterType="String">
+    select *
+    from manage_user
+    where identityID = #{identityID}
+  </select>
+  <select id="selectUserByPage" parameterType="Map" resultMap="BaseResultMap">
+    select *
+    from manage_user
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <select id="selectCountByUser" resultType="java.lang.Integer">
+    select count(*)
+    from manage_user
+  </select>
+
+  <update id="updateUserInfoByID" parameterType="User">
+    update manage_user
+    set password=#{password}
+    where identityID = #{identityID }
+  </update>
+  <update id="updateInfoByMyself" parameterType="User">
+    update manage_user
+    set password=#{password},
+        age=#{age},
+        phone=#{phone},
+        salary=#{salary},
+        username=#{username}
+    where identityID = #{identityID}
+
+  </update>
+  <delete id="deleteUSerByIdentityID" parameterType="User">
+    delete
+    from manage_user
+    where identityID = #{identityID}
+  </delete>
+
+  <insert id="insertSelective" parameterType="User">
+    insert into manage_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="identityID != null">
+        identityID,
+      </if>
+      <if test="time != null">
+        time,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="password != null">
+        `password`,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="salary != null">
+        salary,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="authority != null">
+        authority,
+      </if>
+      <if test="ware_id != null">
+        ware_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="identityID != null">
+        #{identityID,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="authority != null">
+        #{authority,jdbcType=INTEGER},
+      </if>
+      <if test="ware_id != null">
+        #{ware_id,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="User">
+    <!--@mbg.generated-->
+    update manage_user
+    <set>
+      <if test="time != null">
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="salary != null">
+        salary = #{salary,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="authority != null">
+        authority = #{authority,jdbcType=INTEGER},
+      </if>
+      <if test="ware_id != null">
+        ware_id = #{ware_id,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where identityID = #{identityID,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="User">
+    <!--@mbg.generated-->
+    update manage_user
+    set time = #{time,jdbcType=VARCHAR},
+    username = #{username,jdbcType=VARCHAR},
+    `password` = #{password,jdbcType=VARCHAR},
+    age = #{age,jdbcType=INTEGER},
+    gender = #{gender,jdbcType=INTEGER},
+    phone = #{phone,jdbcType=VARCHAR},
+    salary = #{salary,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    authority = #{authority,jdbcType=INTEGER},
+    ware_id = #{ware_id,jdbcType=VARCHAR}
+    where identityID = #{identityID,jdbcType=VARCHAR}
+  </update>
+  <update id="setManageName">
+    update manage_user set ware_id = #{ware_id} where username in
+    <foreach collection="manageName" item="n" index="index" open="(" close=")" separator=",">
+      #{n}
+    </foreach>
+
+  </update>
+</mapper>

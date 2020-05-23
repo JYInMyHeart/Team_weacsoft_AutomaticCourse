@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spring.dao.WareDao">
+  <resultMap id="BaseResultMap" type="com.spring.entity.Ware">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="site" property="site" jdbcType="VARCHAR"/>
+    <result column="area" property="area" jdbcType="VARCHAR"/>
+    <result column="ware_type" property="ware_type" jdbcType="INTEGER"/>
+    <result column="run_date" property="run_date" jdbcType="DATE"/>
+    <result column="state" property="state" jdbcType="VARCHAR"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertWare" parameterType="Ware">
+    insert into ware (id, site, area, ware_type, run_date, state, name)
+    values (#{id}, #{site}, #{area}, #{ware_type}, #{run_date}, #{state}, #{name})
+  </insert>
+  <select id="selectWare" resultType="Ware">
+    select *
+    from ware
+    where id = #{id}
+  </select>
+  <select id="selectWareByPage" parameterType="Map" resultMap="BaseResultMap">
+    select *
+    from ware
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <select id="selectCountByWare" resultType="java.lang.Integer">
+    select count(*)
+    from ware
+  </select>
+  <update id="updateWare" parameterType="Ware">
+    update ware
+    set site=#{site},
+        area=#{area},
+        ware_type=#{ware_type},
+        run_date=#{run_date},
+        state=#{state},
+        name=#{name}
+    where id = #{id}
+  </update>
+  <delete id="deleteWareById" parameterType="Ware">
+    delete
+    from ware
+    where id = #{id}
+  </delete>
+  <select id="selectWareById" resultType="Ware">
+    select *
+    from ware
+    where id = #{id}
+  </select>
+
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, site, area, ware_type, run_date, `state`, `name`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List"/>
+    from ware
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from ware
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="Ware">
+    <!--@mbg.generated-->
+    insert into ware (id, site, area,
+    ware_type, run_date, `state`,
+    `name`)
+    values (#{id,jdbcType=VARCHAR}, #{site,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR},
+    #{ware_type,jdbcType=INTEGER}, #{run_date,jdbcType=DATE}, #{state,jdbcType=VARCHAR},
+    #{name,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="Ware">
+    <!--@mbg.generated-->
+    insert into ware
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="site != null">
+        site,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="ware_type != null">
+        ware_type,
+      </if>
+      <if test="run_date != null">
+        run_date,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="site != null">
+        #{site,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="ware_type != null">
+        #{ware_type,jdbcType=INTEGER},
+      </if>
+      <if test="run_date != null">
+        #{run_date,jdbcType=DATE},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Ware">
+    <!--@mbg.generated-->
+    update ware
+    <set>
+      <if test="site != null">
+        site = #{site,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="ware_type != null">
+        ware_type = #{ware_type,jdbcType=INTEGER},
+      </if>
+      <if test="run_date != null">
+        run_date = #{run_date,jdbcType=DATE},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Ware">
+    <!--@mbg.generated-->
+    update ware
+    set site = #{site,jdbcType=VARCHAR},
+    area = #{area,jdbcType=VARCHAR},
+    ware_type = #{ware_type,jdbcType=INTEGER},
+    run_date = #{run_date,jdbcType=DATE},
+    `state` = #{state,jdbcType=VARCHAR},
+    `name` = #{name,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="wareLeader" resultType="com.spring.entity.User">
+    select u.*
+    from manage_user u,
+         ware w
+    where u.ware_id = w.id
+      and w.id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectWareByName" resultMap="BaseResultMap">
+    select *
+    from ware
+    where name = #{name}
+  </select>
+  <select id="selectWareByUserName" resultType="java.lang.String">
+    select ware.name
+    from ware,
+         manage_user
+    where ware.id = manage_user.ware_id
+      and username = #{username,jdbcType=VARCHAR}
+  </select>
+</mapper>
