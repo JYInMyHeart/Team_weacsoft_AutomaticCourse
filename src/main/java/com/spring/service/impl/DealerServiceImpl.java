@@ -56,14 +56,7 @@ public class DealerServiceImpl implements DealerService {
         //封装排序规则
         pageBean.setPageAsc(asc);
 
-        //封装总记录数
-        int totalCount = dealerDao.selectCountByDealer();
-        pageBean.setTotalCount(totalCount);
 
-        //封装总页数
-        double tc = totalCount;
-        Double num =Math.ceil(tc/size);//向上取整
-        pageBean.setTotalPage(num.intValue());
 
 
         map.put("PageStart",(page-1)*size);
@@ -73,6 +66,13 @@ public class DealerServiceImpl implements DealerService {
 
         //封装每页显示的数据
         List<Dealer> lists = dealerDao.selectDealerByPage(map);
+        //封装总记录数
+        int totalCount = lists.size();
+        pageBean.setTotalCount(totalCount);
+
+        //封装总页数
+        double num =Math.ceil((double) totalCount / size);//向上取整
+        pageBean.setTotalPage((int) num);
         pageBean.setLists(lists);
         return pageBean;
     }

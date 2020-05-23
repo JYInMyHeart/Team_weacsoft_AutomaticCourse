@@ -55,14 +55,7 @@ public class SupplierServiceImpl implements SupplierService {
         //封装排序规则
         pageBean.setPageAsc(asc);
 
-        //封装总记录数
-        int totalCount = supplierDao.selectCountBySupplier();
-        pageBean.setTotalCount(totalCount);
 
-        //封装总页数
-        double tc = totalCount;
-        Double num =Math.ceil(tc/size);//向上取整
-        pageBean.setTotalPage(num.intValue());
 
 
         map.put("PageStart",(page-1)*size);
@@ -72,6 +65,14 @@ public class SupplierServiceImpl implements SupplierService {
 
         //封装每页显示的数据
         List<Supplier> lists = supplierDao.selectSupplierByPage(map);
+        //封装总记录数
+        int totalCount = lists.size();
+        pageBean.setTotalCount(totalCount);
+
+        //封装总页数
+        double tc = totalCount;
+        Double num =Math.ceil(tc/size);//向上取整
+        pageBean.setTotalPage(num.intValue());
         pageBean.setLists(lists);
         return pageBean;
     }

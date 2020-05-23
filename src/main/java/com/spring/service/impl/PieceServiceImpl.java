@@ -59,13 +59,7 @@ public class PieceServiceImpl implements PieceService {
         //封装排序规则
         pageBean.setPageAsc(asc);
 
-        //封装总记录数
-        int totalCount = pieceDao.selectCountByPiece();
-        pageBean.setTotalCount(totalCount);
 
-        //封装总页数
-        double num = Math.ceil((double) totalCount / size);//向上取整
-        pageBean.setTotalPage((int) num);
 
 
         map.put("PageStart", (page - 1) * size);
@@ -95,6 +89,12 @@ public class PieceServiceImpl implements PieceService {
                 }
             }
         });
+        //封装总记录数
+        pageBean.setTotalCount(pieceVoList.size());
+
+        //封装总页数
+        double num = Math.ceil((double) pieceVoList.size() / size);//向上取整
+        pageBean.setTotalPage((int) num);
         pageBean.setLists(pieceVoList);
         return pageBean;
     }
