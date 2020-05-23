@@ -6,6 +6,7 @@ import com.spring.entity.PageBean;
 import com.spring.entity.Piece;
 import com.spring.entity.PieceVo;
 import com.spring.service.PieceService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,11 @@ public class PieceServiceImpl implements PieceService {
     PieceDao pieceDao;
     @Autowired
     WareDao wareDao;
+
     @Override
     public void deletePieceById(String id) {
+        pieceDao.deleteDealer(id);
+        pieceDao.deleteSupplier(id);
         pieceDao.deletePieceById(id);
     }
 
@@ -44,7 +48,7 @@ public class PieceServiceImpl implements PieceService {
 
     @Override
     public PageBean<PieceVo> selectPieceByPage(int size, int page, String sort, String asc) {
-        HashMap<String,Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         PageBean<PieceVo> pageBean = new PageBean<>();
         //封装当前页数
         pageBean.setCurrPage(page);
@@ -60,23 +64,37 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setTotalCount(totalCount);
 
         //封装总页数
-        double num =Math.ceil((double) totalCount / size);//向上取整
+        double num = Math.ceil((double) totalCount / size);//向上取整
         pageBean.setTotalPage((int) num);
 
 
-        map.put("PageStart",(page-1)*size);
+        map.put("PageStart", (page - 1) * size);
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
 
         //封装每页显示的数据
-        List<Piece> lists = pieceDao.selectPieceByPage(map);
-        List<PieceVo> pieceVoList = lists.stream().map(x -> {
-            PieceVo pieceVo = new PieceVo();
-            BeanUtils.copyProperties(x, pieceVo);
-            pieceVo.setWare_name(wareDao.selectWareById(x.getWare_id()).getName());
-            return pieceVo;
-        }).collect(Collectors.toList());
+        List<PieceVo> pieceVoList = pieceDao.selectPieceByPage(map);
+        List<PieceVo> pieceVoList1 = pieceDao.selectDealerByPieceId();
+        List<PieceVo> pieceVoList2 = pieceDao.selectSupplierByPieceId();
+        pieceVoList.forEach(p -> {
+            if (CollectionUtils.isNotEmpty(pieceVoList1)) {
+                PieceVo dealer =
+                        pieceVoList1.stream().filter(y -> y.getId().equals(p.getId())).findFirst().orElse(null);
+                if (dealer != null) {
+                    String dealer_name = dealer.getDealer_name();
+                    p.setDealer_name(dealer_name);
+                }
+            }
+            if (CollectionUtils.isNotEmpty(pieceVoList2)) {
+                PieceVo supplier =
+                        pieceVoList2.stream().filter(y -> y.getId().equals(p.getId())).findFirst().orElse(null);
+                if (supplier != null) {
+                    String supplier_name = supplier.getSupplier_name();
+                    p.setSupplier_name(supplier_name);
+                }
+            }
+        });
         pageBean.setLists(pieceVoList);
         return pageBean;
     }
@@ -88,7 +106,7 @@ public class PieceServiceImpl implements PieceService {
 
     @Override
     public void updatePiece(Piece piece) {
-         pieceDao.updateByPrimaryKeySelective(piece);
+        pieceDao.updateByPrimaryKeySelective(piece);
     }
 
     @Override
@@ -97,8 +115,8 @@ public class PieceServiceImpl implements PieceService {
     }
 
     @Override
-    public PageBean<PieceVo> selectBySupplier(String supplierName,int size, int page, String sort, String asc) {
-        HashMap<String,Object> map = new HashMap<>();
+    public PageBean<PieceVo> selectBySupplier(String supplierName, int size, int page, String sort, String asc) {
+        HashMap<String, Object> map = new HashMap<>();
         PageBean<PieceVo> pageBean = new PageBean<>();
         //封装当前页数
         pageBean.setCurrPage(page);
@@ -110,9 +128,7 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setPageAsc(asc);
 
 
-
-
-        map.put("PageStart",(page-1)*size);
+        map.put("PageStart", (page - 1) * size);
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
@@ -123,15 +139,15 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setTotalCount(totalCount);
 
         //封装总页数
-        double num =Math.ceil((double) totalCount / size);//向上取整
+        double num = Math.ceil((double) totalCount / size);//向上取整
         pageBean.setTotalPage((int) num);
         pageBean.setLists(pieceVos);
         return pageBean;
     }
 
     @Override
-    public PageBean<PieceVo> selectByDealer(String dealerName,int size, int page, String sort, String asc) {
-        HashMap<String,Object> map = new HashMap<>();
+    public PageBean<PieceVo> selectByDealer(String dealerName, int size, int page, String sort, String asc) {
+        HashMap<String, Object> map = new HashMap<>();
         PageBean<PieceVo> pageBean = new PageBean<>();
         //封装当前页数
         pageBean.setCurrPage(page);
@@ -143,9 +159,7 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setPageAsc(asc);
 
 
-
-
-        map.put("PageStart",(page-1)*size);
+        map.put("PageStart", (page - 1) * size);
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
@@ -156,7 +170,7 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setTotalCount(totalCount);
 
         //封装总页数
-        double num =Math.ceil((double) totalCount / size);//向上取整
+        double num = Math.ceil((double) totalCount / size);//向上取整
         pageBean.setTotalPage((int) num);
         pageBean.setLists(pieceVos);
         return pageBean;
@@ -169,7 +183,7 @@ public class PieceServiceImpl implements PieceService {
 
     @Override
     public void addSupplier(String id, String s) {
-        pieceDao.addSupplier(id,s);
+        pieceDao.addSupplier(id, s);
     }
 
     @Override
@@ -179,6 +193,6 @@ public class PieceServiceImpl implements PieceService {
 
     @Override
     public void addDealer(String id, String s) {
-        pieceDao.addDealer(id,s);
+        pieceDao.addDealer(id, s);
     }
 }

@@ -1,223 +1,275 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.spring.dao.PieceDao">
-    <resultMap id="BaseResultMap" type="com.spring.entity.Piece">
-        <result column="id" property="id" jdbcType="VARCHAR"/>
-        <result column="piece_name" property="piece_name" jdbcType="VARCHAR"/>
-        <result column="scc" property="scc" jdbcType="VARCHAR"/>
-        <result column="help_code" property="help_code" jdbcType="VARCHAR"/>
-        <result column="price" property="price" jdbcType="VARCHAR"/>
-        <result column="inventory" property="inventory" jdbcType="INTEGER"/>
-        <result column="state" property="state" jdbcType="VARCHAR"/>
-        <result column="run_date" property="run_date" />
-        <result column="ware_id" property="ware_id" jdbcType="VARCHAR"/>
-    </resultMap>
-    <insert id="insertPiece" parameterType="Piece">
-        insert into piece (id, piece_name, scc, help_code, price, inventory,state,run_date,ware_id)
-        values (#{id}, #{piece_name}, #{scc}, #{help_code},#{price},#{inventory},#{state},#{run_date},#{ware_id})
-    </insert>
-    <select id="selectPiece" resultType="Piece">
-        select *
-        from piece
-        where id=#{id}
-    </select>
-    <select id="selectPieceByPage" parameterType="Map" resultMap="BaseResultMap">
-        select *
-        from piece
-        <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
-            ORDER BY #{PageSort} #{PageAsc}
-            limit #{PageStart},#{PageSize}
-        </if>
-    </select>
-    <select id="selectCountByPiece" resultType="java.lang.Integer">
-        select count(*) from piece
-    </select>
-    <update id="updatePiece" parameterType="Piece">
-        update piece
-        set
-        piece_name=#{piece_name},
+  <resultMap id="BaseResultMap" type="com.spring.entity.Piece">
+    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="piece_name" property="piece_name" jdbcType="VARCHAR"/>
+    <result column="scc" property="scc" jdbcType="VARCHAR"/>
+    <result column="help_code" property="help_code" jdbcType="VARCHAR"/>
+    <result column="price" property="price" jdbcType="VARCHAR"/>
+    <result column="inventory" property="inventory" jdbcType="INTEGER"/>
+    <result column="state" property="state" jdbcType="VARCHAR"/>
+    <result column="run_date" property="run_date"/>
+    <result column="ware_id" property="ware_id" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertPiece" parameterType="Piece">
+    insert into piece (id, piece_name, scc, help_code, price, inventory, state, run_date, ware_id)
+    values (#{id}, #{piece_name}, #{scc}, #{help_code}, #{price}, #{inventory}, #{state}, #{run_date}, #{ware_id})
+  </insert>
+  <select id="selectPiece" resultType="Piece">
+    select *
+    from piece
+    where id = #{id}
+  </select>
+  <select id="selectPieceByPage" parameterType="Map" resultType="com.spring.entity.PieceVo">
+    select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name
+    from piece p
+    right join ware w on w.id = p.ware_id
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <select id="selectSupplierByPieceId" resultType="com.spring.entity.PieceVo">
+    select p.id,
+           p.piece_name,
+           p.scc,
+           p.help_code,
+           p.price,
+           p.inventory,
+           p.state,
+           p.run_date,
+           w.name,
+           GROUP_CONCAT(distinct CONCAT(s.name)) as supplier_name
+    from piece p
+           left join ware w on w.id = p.ware_id
+           left join supplier_piece sp on sp.piece_id = p.id
+           left join supplier s on s.id = sp.supplier_id
+  </select>
+
+  <select id="selectDealerByPieceId" resultType="com.spring.entity.PieceVo">
+    select p.id,
+           p.piece_name,
+           p.scc,
+           p.help_code,
+           p.price,
+           p.inventory,
+           p.state,
+           p.run_date,
+           w.name,
+           GROUP_CONCAT(distinct CONCAT(d.name)) as dealer_name
+    from piece p
+           left join ware w on w.id = p.ware_id
+           left join dealer_piece dp on dp.piece_id = p.id
+           left join dealer d on d.id = dp.dealer_id
+  </select>
+  <select id="selectCountByPiece" resultType="java.lang.Integer">
+    select count(*)
+    from piece
+  </select>
+  <update id="updatePiece" parameterType="Piece">
+    update piece
+    set piece_name=#{piece_name},
         scc=#{scc},
         help_code=#{help_code},
-            price=#{price},
+        price=#{price},
         inventory=#{inventory},
         state=#{state},
-            run_date=#{run_date},
+        run_date=#{run_date},
         ware_id=#{ware_id}
-        where id=#{id}
-    </update>
-    <delete id="deletePieceById" parameterType="Piece">
-        delete from piece
-        where id=#{id}
-    </delete>
-    <select id="selectPieceById" resultType="Piece">
-        select * from piece
-        where id=#{id}
-    </select>
-    <sql id="Base_Column_List">
-        <!--@mbg.generated-->
-        id, piece_name, scc, help_code, price, inventory, `state`, run_date, ware_id
-    </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        <!--@mbg.generated-->
-        select
-        <include refid="Base_Column_List" />
-        from piece
-        where id = #{id,jdbcType=VARCHAR}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-        <!--@mbg.generated-->
-        delete from piece
-        where id = #{id,jdbcType=VARCHAR}
-    </delete>
-    <insert id="insert" parameterType="Piece">
-        <!--@mbg.generated-->
-        insert into piece (id, piece_name, scc,
-        help_code, price, inventory,
-        `state`, run_date, ware_id
-        )
-        values (#{id,jdbcType=VARCHAR}, #{piece_name,jdbcType=VARCHAR}, #{scc,jdbcType=VARCHAR},
-        #{help_code,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, #{inventory,jdbcType=INTEGER},
-        #{state,jdbcType=VARCHAR}, #{run_date,jdbcType=DATE}, #{ware_id,jdbcType=VARCHAR}
-        )
-    </insert>
-    <insert id="insertSelective" parameterType="Piece">
-        <!--@mbg.generated-->
-        insert into piece
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="piece_name != null">
-                piece_name,
-            </if>
-            <if test="scc != null">
-                scc,
-            </if>
-            <if test="help_code != null">
-                help_code,
-            </if>
-            <if test="price != null">
-                price,
-            </if>
-            <if test="inventory != null">
-                inventory,
-            </if>
-            <if test="state != null">
-                `state`,
-            </if>
-            <if test="run_date != null">
-                run_date,
-            </if>
-            <if test="ware_id != null">
-                ware_id,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
-            <if test="piece_name != null">
-                #{piece_name,jdbcType=VARCHAR},
-            </if>
-            <if test="scc != null">
-                #{scc,jdbcType=VARCHAR},
-            </if>
-            <if test="help_code != null">
-                #{help_code,jdbcType=VARCHAR},
-            </if>
-            <if test="price != null">
-                #{price,jdbcType=VARCHAR},
-            </if>
-            <if test="inventory != null">
-                #{inventory,jdbcType=INTEGER},
-            </if>
-            <if test="state != null">
-                #{state,jdbcType=VARCHAR},
-            </if>
-            <if test="run_date != null">
-                #{run_date,jdbcType=DATE},
-            </if>
-            <if test="ware_id != null">
-                #{ware_id,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="Piece">
-        <!--@mbg.generated-->
-        update piece
-        <set>
-            <if test="piece_name != null">
-                piece_name = #{piece_name,jdbcType=VARCHAR},
-            </if>
-            <if test="scc != null">
-                scc = #{scc,jdbcType=VARCHAR},
-            </if>
-            <if test="help_code != null">
-                help_code = #{help_code,jdbcType=VARCHAR},
-            </if>
-            <if test="price != null">
-                price = #{price,jdbcType=VARCHAR},
-            </if>
-            <if test="inventory != null">
-                inventory = #{inventory,jdbcType=INTEGER},
-            </if>
-            <if test="state != null">
-                `state` = #{state,jdbcType=VARCHAR},
-            </if>
-            <if test="run_date != null">
-                run_date = #{run_date,jdbcType=DATE},
-            </if>
-            <if test="ware_id != null">
-                ware_id = #{ware_id,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where id = #{id,jdbcType=VARCHAR}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="Piece">
-        <!--@mbg.generated-->
-        update piece
-        set piece_name = #{piece_name,jdbcType=VARCHAR},
+    where id = #{id}
+  </update>
+  <delete id="deletePieceById" parameterType="Piece">
+    delete
+    from piece
+    where id = #{id}
+  </delete>
+  <select id="selectPieceById" resultType="Piece">
+    select *
+    from piece
+    where id = #{id}
+  </select>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, piece_name, scc, help_code, price, inventory, `state`, run_date, ware_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List"/>
+    from piece
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from piece
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="Piece">
+    <!--@mbg.generated-->
+    insert into piece (id, piece_name, scc,
+    help_code, price, inventory,
+    `state`, run_date, ware_id
+    )
+    values (#{id,jdbcType=VARCHAR}, #{piece_name,jdbcType=VARCHAR}, #{scc,jdbcType=VARCHAR},
+    #{help_code,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, #{inventory,jdbcType=INTEGER},
+    #{state,jdbcType=VARCHAR}, #{run_date,jdbcType=DATE}, #{ware_id,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="Piece">
+    <!--@mbg.generated-->
+    insert into piece
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="piece_name != null">
+        piece_name,
+      </if>
+      <if test="scc != null">
+        scc,
+      </if>
+      <if test="help_code != null">
+        help_code,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="inventory != null">
+        inventory,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="run_date != null">
+        run_date,
+      </if>
+      <if test="ware_id != null">
+        ware_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="piece_name != null">
+        #{piece_name,jdbcType=VARCHAR},
+      </if>
+      <if test="scc != null">
+        #{scc,jdbcType=VARCHAR},
+      </if>
+      <if test="help_code != null">
+        #{help_code,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="inventory != null">
+        #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="run_date != null">
+        #{run_date,jdbcType=DATE},
+      </if>
+      <if test="ware_id != null">
+        #{ware_id,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Piece">
+    <!--@mbg.generated-->
+    update piece
+    <set>
+      <if test="piece_name != null">
+        piece_name = #{piece_name,jdbcType=VARCHAR},
+      </if>
+      <if test="scc != null">
         scc = #{scc,jdbcType=VARCHAR},
+      </if>
+      <if test="help_code != null">
         help_code = #{help_code,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
         price = #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="inventory != null">
         inventory = #{inventory,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
         `state` = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="run_date != null">
         run_date = #{run_date,jdbcType=DATE},
-        ware_id = #{ware_id,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=VARCHAR}
-    </update>
-    <select id="selectBySupplier" parameterType="Map" resultType="com.spring.entity.PieceVo">
-        select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name from piece p
-        left join ware w on w.id = p.ware_id
-            left join supplier_piece sp on sp.piece_id = p.id
-        left join supplier s on s.id = sp.supplier_id
-        where s.name like  CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
-        <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
-            ORDER BY #{PageSort} #{PageAsc}
-            limit #{PageStart},#{PageSize}
-        </if>
-    </select>
-    <select id="selectByDealer"  parameterType="Map" resultType="com.spring.entity.PieceVo">
-        select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name from piece p
-        left join ware w on w.id = p.ware_id
-        left join dealer_piece dp on dp.piece_id = p.id
-        left join dealer d on d.id = dp.dealer_id
-        where d.name like  CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%')
-        <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
-            ORDER BY #{PageSort} #{PageAsc}
-            limit #{PageStart},#{PageSize}
-        </if>
-    </select>
-    <delete id="deleteSupplier">
-        delete from supplier_piece where piece_id = #{id,jdbcType=VARCHAR}
-    </delete>
-    <delete id="deleteDealer">
-        delete from dealer_piece where piece_id = #{id,jdbcType=VARCHAR}
-    </delete>
-    <insert id="addSupplier">
-        insert into supplier_piece values (#{supplierId,jdbcType=VARCHAR},#{id,jdbcType=VARCHAR})
-    </insert>
-    <insert id="addDealer">
-        insert into dealer_piece values (#{dealerId,jdbcType=VARCHAR},#{id,jdbcType=VARCHAR})
-    </insert>
+      </if>
+      <if test="ware_id != null">
+        ware_id = #{ware_id,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Piece">
+    <!--@mbg.generated-->
+    update piece
+    set piece_name = #{piece_name,jdbcType=VARCHAR},
+    scc = #{scc,jdbcType=VARCHAR},
+    help_code = #{help_code,jdbcType=VARCHAR},
+    price = #{price,jdbcType=VARCHAR},
+    inventory = #{inventory,jdbcType=INTEGER},
+    `state` = #{state,jdbcType=VARCHAR},
+    run_date = #{run_date,jdbcType=DATE},
+    ware_id = #{ware_id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectBySupplier" parameterType="Map" resultType="com.spring.entity.PieceVo">
+    select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name
+    ,GROUP_CONCAT(distinct CONCAT( s.name )) as supplier_name,
+    GROUP_CONCAT(distinct CONCAT( d.name )) as dealer_name
+    from piece p
+    left join ware w on w.id = p.ware_id
+    left join supplier_piece sp on sp.piece_id = p.id
+    left join supplier s on s.id = sp.supplier_id
+    left join dealer_piece dp on dp.piece_id = p.id
+    left join dealer d on d.id = dp.dealer_id
+    where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <select id="selectByDealer" parameterType="Map" resultType="com.spring.entity.PieceVo">
+    select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name
+    ,GROUP_CONCAT(distinct CONCAT( s.name )) as supplier_name,
+    GROUP_CONCAT(distinct CONCAT( d.name )) as dealer_name
+    from piece p
+    left join ware w on w.id = p.ware_id
+    left join dealer_piece dp on dp.piece_id = p.id
+    left join dealer d on d.id = dp.dealer_id
+    left join supplier_piece sp on p.id = sp.piece_id
+    left join supplier s on sp.supplier_id = s.id
+    where d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%') group by p.id
+    <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
+      ORDER BY #{PageSort} #{PageAsc}
+      limit #{PageStart},#{PageSize}
+    </if>
+  </select>
+  <delete id="deleteSupplier">
+    delete
+    from supplier_piece
+    where piece_id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteDealer">
+    delete
+    from dealer_piece
+    where piece_id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addSupplier">
+    insert into supplier_piece
+    values (#{supplierId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR})
+  </insert>
+  <insert id="addDealer">
+    insert into dealer_piece
+    values (#{dealerId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR})
+  </insert>
 </mapper>

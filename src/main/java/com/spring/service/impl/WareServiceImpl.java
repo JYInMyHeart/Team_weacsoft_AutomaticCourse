@@ -1,5 +1,6 @@
 package com.spring.service.impl;
 
+import com.spring.dao.UserDao;
 import com.spring.dao.WareDao;
 import com.spring.entity.PageBean;
 import com.spring.entity.User;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class WareServiceImpl implements WareService {
     @Autowired
     WareDao wareDao;
+    @Autowired
+    UserDao userDao;
 
     @Override
     public void insertWare(Ware ware) {
@@ -27,6 +30,7 @@ public class WareServiceImpl implements WareService {
 
     @Override
     public void deleteWareById(String id) {
+        userDao.updateUserByWareId(id);
         wareDao.deleteByPrimaryKey(id);
     }
 

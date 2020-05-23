@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -99,8 +100,8 @@ public class PieceController {
     @ResponseBody
     public ResponseEntity selectPiece(@RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                       @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                      @RequestParam(value = "sort", required = false) String sort,
-                                      @RequestParam(value = "asc", required = false) String asc,
+                                      @RequestParam(value = "sort", required = false, defaultValue = "id") String sort,
+                                      @RequestParam(value = "asc", required = false, defaultValue = "asc") String asc,
                                       @RequestParam(value = "keyWord", required = false) String keyWord)
             throws IOException {
         ResponseEntity responseData;
@@ -123,6 +124,8 @@ public class PieceController {
                                .filter(x -> x.getWare_name().contains(list.get(0))).collect(
                                 Collectors.toList())
                 );
+            }else{
+                pagemsg.setLists(new ArrayList<>());
             }
 
         }

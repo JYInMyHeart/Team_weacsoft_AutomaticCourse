@@ -14,13 +14,21 @@ import java.util.List;
 public interface PieceDao {
 
     void deletePieceById(String id);
+
     void insertPiece(Piece piece);
+
     Piece selectPiece(String id);
+
     List<Piece> selectAllPiece();
-    List<Piece> selectPieceByPage(HashMap<String, Object> map);
+
+    List<PieceVo> selectPieceByPage(HashMap<String, Object> map);
+
     int selectCountByPiece();
-   void updatePiece(Piece piece);
-   Piece selectPieceById(String id);
+
+    void updatePiece(Piece piece);
+
+    Piece selectPieceById(String id);
+
     int deleteByPrimaryKey(String id);
 
     int insert(Piece record);
@@ -33,15 +41,19 @@ public interface PieceDao {
 
     int updateByPrimaryKey(Piece record);
 
-    List<PieceVo> selectBySupplier(HashMap<String, Object> map );
+    List<PieceVo> selectBySupplier(HashMap<String, Object> map);
 
     List<PieceVo> selectByDealer(HashMap<String, Object> map);
 
     void deleteSupplier(String id);
 
-    void addSupplier(@Param("id") String id,@Param("supplierId")  String s);
+    void addSupplier(@Param("id") String id, @Param("supplierId") String s);
 
     void deleteDealer(String id);
 
-    void addDealer(@Param("id") String id,@Param("dealerId")  String s);
+    void addDealer(@Param("id") String id, @Param("dealerId") String s);
+
+    List<PieceVo> selectDealerByPieceId();
+
+    List<PieceVo> selectSupplierByPieceId();
 }

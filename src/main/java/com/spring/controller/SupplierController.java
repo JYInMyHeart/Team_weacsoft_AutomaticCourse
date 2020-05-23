@@ -74,8 +74,8 @@ public class SupplierController {
     @ResponseBody
     public ResponseEntity selectSupplier(@RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                          @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                         @RequestParam(value = "sort", required = false) String sort,
-                                         @RequestParam(value = "asc", required = false) String asc,
+                                         @RequestParam(value = "sort", required = false, defaultValue = "id") String sort,
+                                         @RequestParam(value = "asc", required = false, defaultValue = "asc") String asc,
                                          @RequestParam(value = "keyWord", required = false) String keyWord)
             throws IOException {
         ResponseEntity responseData = null;
