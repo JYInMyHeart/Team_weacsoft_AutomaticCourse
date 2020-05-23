@@ -97,7 +97,7 @@ public class WareController {
         }
         String token = LoginInterceptor.globalToken;
         User user = JwtToken.unsign(token, User.class);
-        PageBean<WareVO> pagemsg = wareService.selectWareByPage(size, page, sort, asc);
+        PageBean<WareVO> pagemsg = wareService.selectWareByPage(size, page, sort, asc,keyWord);
         if (StringUtils.isNotBlank(keyWord)) {
             pagemsg.setLists(
                     pagemsg.getLists().stream()

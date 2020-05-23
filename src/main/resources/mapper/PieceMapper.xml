@@ -22,9 +22,9 @@
     where id = #{id}
   </select>
   <select id="selectPieceByPage" parameterType="Map" resultType="com.spring.entity.PieceVo">
-    select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name
+    select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name as ware_name
     from piece p
-    right join ware w on w.id = p.ware_id
+    left join ware w on w.id = p.ware_id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}

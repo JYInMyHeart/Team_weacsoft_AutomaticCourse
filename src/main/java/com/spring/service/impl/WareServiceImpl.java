@@ -69,7 +69,7 @@ public class WareServiceImpl implements WareService {
         return wareDao.selectAllWare();
     }
     @Override
-    public PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc) {
+    public PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc,String keyWord) {
         HashMap<String,Object> map = new HashMap<>();
         PageBean<WareVO> pageBean = new PageBean<>();
         //封装当前页数
@@ -81,7 +81,13 @@ public class WareServiceImpl implements WareService {
         //封装排序规则
         pageBean.setPageAsc(asc);
 
+        //封装总记录数
+        int totalCount = wareDao.countWareWithKey(keyWord);
+        pageBean.setTotalCount(totalCount);
 
+        //封装总页数
+        double num =Math.ceil((double) totalCount / size);//向上取整
+        pageBean.setTotalPage((int) num);
 
         map.put("PageStart",(page-1)*size);
         map.put("PageSize", pageBean.getPageSize());
@@ -105,13 +111,7 @@ public class WareServiceImpl implements WareService {
             return wareVO;
         })
                                     .collect(Collectors.toList());
-        //封装总记录数
-        int totalCount = wareDao.selectCountByWare();
-        pageBean.setTotalCount(totalCount);
 
-        //封装总页数
-        double num =Math.ceil((double) totalCount / size);//向上取整
-        pageBean.setTotalPage((int) num);
 
         pageBean.setLists(wareVOList);
         return pageBean;

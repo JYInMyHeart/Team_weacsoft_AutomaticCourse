@@ -14,7 +14,7 @@ public interface WareService {
     Ware selectWare(String id);
     Ware selectWareByName(String name);
     List<Ware> selectAllWare();
-    PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc);
+    PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc,String keyWord);
     int selectCountByWare();
     void updateWare(Ware ware);
     Ware selectWareById(String id);

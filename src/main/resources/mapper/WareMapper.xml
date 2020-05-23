@@ -182,4 +182,12 @@
     where ware.id = manage_user.ware_id
       and username = #{username,jdbcType=VARCHAR}
   </select>
+  <select id="countWareWithKey" resultType="int">
+    select count(id)
+    from ware
+    <if test="keyWord != null and keyWord != ''">
+      where name like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+      or site like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
 </mapper>

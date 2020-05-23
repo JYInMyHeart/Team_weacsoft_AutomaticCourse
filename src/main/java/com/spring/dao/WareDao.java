@@ -3,6 +3,7 @@ package com.spring.dao;
 import com.spring.entity.User;
 import com.spring.entity.Ware;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -15,7 +16,6 @@ public interface WareDao {
     void deleteWareById(String id);
     void insertWare(Ware ware);
     Ware selectWare(String id);
-    List<Ware> selectAllWare();
     List<Ware> selectWareByPage(HashMap<String,Object> map);
     int selectCountByWare();
    void updateWare(Ware ware);
@@ -37,4 +37,6 @@ public interface WareDao {
     Ware selectWareByName(String name);
 
     List<String> selectWareByUserName(String username);
+
+    int countWareWithKey(@Param("keyWord") String keyWord);
 }
