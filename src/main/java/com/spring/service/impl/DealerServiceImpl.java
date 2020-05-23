@@ -67,7 +67,7 @@ public class DealerServiceImpl implements DealerService {
         //封装每页显示的数据
         List<Dealer> lists = dealerDao.selectDealerByPage(map);
         //封装总记录数
-        int totalCount = lists.size();
+        int totalCount = dealerDao.selectCountByDealer();
         pageBean.setTotalCount(totalCount);
 
         //封装总页数

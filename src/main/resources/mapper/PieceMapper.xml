@@ -44,7 +44,7 @@
     from piece p
            left join ware w on w.id = p.ware_id
            left join supplier_piece sp on sp.piece_id = p.id
-           left join supplier s on s.id = sp.supplier_id
+           left join supplier s on s.id = sp.supplier_id group by p.id
   </select>
 
   <select id="selectDealerByPieceId" resultType="com.spring.entity.PieceVo">
@@ -61,7 +61,7 @@
     from piece p
            left join ware w on w.id = p.ware_id
            left join dealer_piece dp on dp.piece_id = p.id
-           left join dealer d on d.id = dp.dealer_id
+           left join dealer d on d.id = dp.dealer_id group by p.id
   </select>
   <select id="selectCountByPiece" resultType="java.lang.Integer">
     select count(*)
@@ -233,6 +233,7 @@
     left join dealer_piece dp on dp.piece_id = p.id
     left join dealer d on d.id = dp.dealer_id
     where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+    group by p.id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}

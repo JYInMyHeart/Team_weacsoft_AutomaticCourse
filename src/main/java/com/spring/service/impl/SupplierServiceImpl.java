@@ -66,7 +66,7 @@ public class SupplierServiceImpl implements SupplierService {
         //封装每页显示的数据
         List<Supplier> lists = supplierDao.selectSupplierByPage(map);
         //封装总记录数
-        int totalCount = lists.size();
+        int totalCount = supplierDao.selectCountBySupplier();
         pageBean.setTotalCount(totalCount);
 
         //封装总页数

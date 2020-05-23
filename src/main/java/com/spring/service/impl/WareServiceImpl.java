@@ -106,7 +106,7 @@ public class WareServiceImpl implements WareService {
         })
                                     .collect(Collectors.toList());
         //封装总记录数
-        int totalCount = wareVOList.size();
+        int totalCount = wareDao.selectCountByWare();
         pageBean.setTotalCount(totalCount);
 
         //封装总页数

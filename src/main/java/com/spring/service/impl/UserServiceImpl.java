@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
         //封装每页显示的数据
         List<User> lists = userDao.selectUserByPage(map);
         //封装总记录数
-        int totalCount = lists.size();
+        int totalCount = userDao.selectCountByUser();
         pageBean.setTotalCount(totalCount);
         //封装总页数
         double num = Math.ceil((double) totalCount / size);//向上取整
