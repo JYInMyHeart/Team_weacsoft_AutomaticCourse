@@ -24,9 +24,9 @@ public interface PieceService {
 
     Piece selectPieceById(int id);
 
-    PageBean<PieceVo> selectBySupplier(String supplierName,Integer size, Integer page, String sort, String asc);
+    PageBean<PieceVo> selectBySupplier(String supplierName,Integer size, Integer page, String sort, String asc,User user);
 
-    PageBean<PieceVo> selectByDealer(String dealerName,Integer size, Integer page, String sort, String asc);
+    PageBean<PieceVo> selectByDealer(String dealerName,Integer size, Integer page, String sort, String asc,User user);
 
     void deleteSupplier(int id);
 

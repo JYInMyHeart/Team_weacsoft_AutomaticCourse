@@ -24,16 +24,14 @@
   <select id="selectPieceByPage" parameterType="Map" resultType="com.spring.entity.PieceVo">
     select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name as ware_name
     from piece p
-    left join ware w on w.id = p.ware_id where 1 = 1
+    left join ware w on w.id = p.ware_id
+    left join manage_user mu on w.id = mu.ware_id
+    where 1 = 1
     <if test="keyWord != null and keyWord != ''">
       and p.piece_name like concat('%',#{keyWord},'%') or w.name like concat('%',#{keyWord},'%') or p.help_code like concat('%',#{keyWord},'%')
     </if>
     <if test="userRole != null and userRole == 1">
-     and w.name in (select ware.name
-      from ware,
-      manage_user
-      where ware.id = manage_user.ware_id
-      and username = #{username})
+      and username = #{username}
     </if>
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
@@ -238,12 +236,16 @@
     GROUP_CONCAT(distinct CONCAT( d.name )) as dealer_name
     from piece p
     left join ware w on w.id = p.ware_id
+    left join manage_user mu on mu.ware_id = w.id
     left join supplier_piece sp on sp.piece_id = p.id
     left join supplier s on s.id = sp.supplier_id
     left join dealer_piece dp on dp.piece_id = p.id
     left join dealer d on d.id = dp.dealer_id
     <if test="supplierName != null and supplierName != ''">
       where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="userRole != null and userRole == 1">
+      and username = #{username}
     </if>
     group by p.id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
@@ -257,12 +259,16 @@
     GROUP_CONCAT(distinct CONCAT( d.name )) as dealer_name
     from piece p
     left join ware w on w.id = p.ware_id
+    left join manage_user mu on mu.ware_id = w.id
     left join dealer_piece dp on dp.piece_id = p.id
     left join dealer d on d.id = dp.dealer_id
     left join supplier_piece sp on p.id = sp.piece_id
     left join supplier s on sp.supplier_id = s.id
     <if test="dealerName != null and dealerName != ''">
     where d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="userRole != null and userRole == 1">
+      and username = #{username}
     </if>
     group by p.id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">

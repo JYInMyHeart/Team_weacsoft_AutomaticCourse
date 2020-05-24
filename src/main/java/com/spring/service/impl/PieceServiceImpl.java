@@ -64,12 +64,10 @@ public class PieceServiceImpl implements PieceService {
         pageBean.setPageAsc(asc);
 
 
-
-
         map.put("PageStart", (page - 1) * size);
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
-        map.put("keyWord", keyWord == null ? "": keyWord);
+        map.put("keyWord", keyWord == null? "" : keyWord);
         map.put("username", user.getUsername());
         map.put("userRole", user.getAuthority());
 
@@ -125,8 +123,12 @@ public class PieceServiceImpl implements PieceService {
     }
 
     @Override
-    public PageBean<PieceVo> selectBySupplier(String supplierName, Integer size, Integer page, String sort,
-                                              String asc) {
+    public PageBean<PieceVo> selectBySupplier(String supplierName,
+                                              Integer size,
+                                              Integer page,
+                                              String sort,
+                                              String asc,
+                                              User user) {
         HashMap<String, Object> map = new HashMap<>();
         PageBean<PieceVo> pageBean = new PageBean<>();
         //封装当前页数
@@ -143,6 +145,8 @@ public class PieceServiceImpl implements PieceService {
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("supplierName", supplierName);
+        map.put("username", user.getUsername());
+        map.put("userRole", user.getAuthority());
         List<PieceVo> pieceVos = pieceDao.selectBySupplier(map);
         //封装总记录数
         int totalCount = pieceVos.size();
@@ -160,7 +164,12 @@ public class PieceServiceImpl implements PieceService {
     }
 
     @Override
-    public PageBean<PieceVo> selectByDealer(String dealerName, Integer size, Integer page, String sort, String asc) {
+    public PageBean<PieceVo> selectByDealer(String dealerName,
+                                            Integer size,
+                                            Integer page,
+                                            String sort,
+                                            String asc,
+                                            User user) {
         HashMap<String, Object> map = new HashMap<>();
         PageBean<PieceVo> pageBean = new PageBean<>();
         //封装当前页数
@@ -177,6 +186,8 @@ public class PieceServiceImpl implements PieceService {
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("dealerName", dealerName);
+        map.put("username", user.getUsername());
+        map.put("userRole", user.getAuthority());
         List<PieceVo> pieceVos = pieceDao.selectByDealer(map);
         //封装总记录数
         int totalCount = pieceVos.size();

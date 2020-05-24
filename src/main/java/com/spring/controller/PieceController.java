@@ -106,7 +106,7 @@ public class PieceController {
         ResponseEntity responseData;
         String token = LoginInterceptor.globalToken;
         User user = JwtToken.unsign(token, User.class);
-        PageBean<PieceVo> pagemsg = pieceService.selectPieceByPage(size, page, sort, asc,keyWord,user);
+        PageBean<PieceVo> pagemsg = pieceService.selectPieceByPage(size, page, sort, asc, keyWord, user);
         responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;
@@ -145,10 +145,13 @@ public class PieceController {
     @GetMapping("/web/selectBySupplier")
     @ResponseBody
     public ResponseEntity selectBySupplier(@RequestParam String supplierName,
-                                           @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                                           @RequestParam(value = "size", required = false, defaultValue = "10")
+                                                   int size,
                                            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                           @RequestParam(value = "sort", required = false,defaultValue = "id") String sort,
-                                           @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc) throws Exception {
+                                           @RequestParam(value = "sort", required = false, defaultValue = "id")
+                                                   String sort,
+                                           @RequestParam(value = "asc", required = false, defaultValue = "asc")
+                                                   String asc) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -157,8 +160,10 @@ public class PieceController {
             return responseData;
         }
         responseData = ResponseEntity.ok();
-        PageBean<PieceVo> piece = pieceService.selectBySupplier(supplierName,size,page,sort,asc);
-        responseData.putDataValue("piece", piece);
+        String token = LoginInterceptor.globalToken;
+        User user = JwtToken.unsign(token, User.class);
+        PageBean<PieceVo> piece = pieceService.selectBySupplier(supplierName, size, page, sort, asc, user);
+        responseData.putDataValue("records", piece);
         return responseData;
     }
 
@@ -174,8 +179,10 @@ public class PieceController {
     public ResponseEntity selectByDealer(@RequestParam String dealerName,
                                          @RequestParam(value = "size", required = false, defaultValue = "10") int size,
                                          @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                         @RequestParam(value = "sort", required = false,defaultValue = "id") String sort,
-                                         @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc) throws Exception {
+                                         @RequestParam(value = "sort", required = false, defaultValue = "id")
+                                                 String sort,
+                                         @RequestParam(value = "asc", required = false, defaultValue = "asc")
+                                                 String asc) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -184,8 +191,10 @@ public class PieceController {
             return responseData;
         }
         responseData = ResponseEntity.ok();
-        PageBean<PieceVo> piece = pieceService.selectByDealer(dealerName,size,page,sort,asc);
-        responseData.putDataValue("piece", piece);
+        String token = LoginInterceptor.globalToken;
+        User user = JwtToken.unsign(token, User.class);
+        PageBean<PieceVo> piece = pieceService.selectByDealer(dealerName, size, page, sort, asc, user);
+        responseData.putDataValue("records", piece);
         return responseData;
     }
 
