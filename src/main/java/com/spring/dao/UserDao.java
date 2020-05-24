@@ -30,7 +30,9 @@ public interface UserDao {
 
     int updateByPrimaryKey(User record);
 
-    void setManageName(@Param("manageName") List<String> manageName,@Param("ware_id") String ware_id);
+    void setManageName(@Param("manageName") List<String> manageName, @Param("ware_id") Integer ware_id);
 
-    void updateUserByWareId(String id);
+    void updateUserByWareId(Integer id);
+
+    int countUserWithKey(@Param("keyWord")String keyWord);
 }

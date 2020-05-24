@@ -13,11 +13,11 @@ import java.util.List;
 @Mapper
 public interface PieceDao {
 
-    void deletePieceById(String id);
+    void deletePieceById(Integer id);
 
     void insertPiece(Piece piece);
 
-    Piece selectPiece(String id);
+    Piece selectPiece(Integer id);
 
     List<Piece> selectAllPiece();
 
@@ -27,15 +27,15 @@ public interface PieceDao {
 
     void updatePiece(Piece piece);
 
-    Piece selectPieceById(String id);
+    Piece selectPieceById(Integer id);
 
-    int deleteByPrimaryKey(String id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(Piece record);
 
     int insertSelective(Piece record);
 
-    Piece selectByPrimaryKey(String id);
+    Piece selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Piece record);
 
@@ -45,15 +45,17 @@ public interface PieceDao {
 
     List<PieceVo> selectByDealer(HashMap<String, Object> map);
 
-    void deleteSupplier(String id);
+    void deleteSupplier(Integer id);
 
-    void addSupplier(@Param("id") String id, @Param("supplierId") String s);
+    void addSupplier(@Param("id") Integer id, @Param("supplierId") Integer s);
 
-    void deleteDealer(String id);
+    void deleteDealer(Integer id);
 
-    void addDealer(@Param("id") String id, @Param("dealerId") String s);
+    void addDealer(@Param("id") Integer id, @Param("dealerId") Integer s);
 
     List<PieceVo> selectDealerByPieceId();
 
     List<PieceVo> selectSupplierByPieceId();
+
+    Piece selectPieceByName(String piece_name);
 }

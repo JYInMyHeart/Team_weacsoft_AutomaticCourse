@@ -19,12 +19,12 @@ public interface UserService {
       void updateUserInfoByID(User user);
       void updateInfoByMyself(User user);
 //      User selectUserById(String id);
-      PageBean<User> selectUserByPage(int size, int page, String sort, String asc);
+      PageBean<User> selectUserByPage(int size, int page, String sort, String asc,String keyWord);
        int selectCountByUser();
       void deleteUSerByIdentityID(String identityID);
       void updateUser(User user);
 
-    void setManageName(String manageName,String ware_id);
+    void setManageName(String manageName,int ware_id);
 
     Map<String,Integer> count();
 }

@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setManageName(String manageName,String ware_id) {
+    public void setManageName(String manageName,int ware_id) {
         userDao.setManageName(Arrays.stream(manageName.split(",")).collect(Collectors.toList()), ware_id);
     }
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public PageBean<User> selectUserByPage(int size, int page, String sort, String asc) {
+    public PageBean<User> selectUserByPage(int size, int page, String sort, String asc,String keyWord) {
         HashMap<String, Object> map = new HashMap<>();
         PageBean<User> pageBean = new PageBean<>();
         //封装当前页数
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
 
 
         //封装总记录数
-        int totalCount = userDao.selectCountByUser();
+        int totalCount = userDao.countUserWithKey(keyWord);
         pageBean.setTotalCount(totalCount);
         //封装总页数
         double num = Math.ceil((double) totalCount / size);//向上取整
@@ -112,12 +112,9 @@ public class UserServiceImpl implements UserService {
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
+        map.put("keyWord", keyWord == null ? "": keyWord);
         //封装每页显示的数据
         List<User> lists = userDao.selectUserByPage(map);
-
-
-
-
         pageBean.setLists(lists);
         return pageBean;
     }

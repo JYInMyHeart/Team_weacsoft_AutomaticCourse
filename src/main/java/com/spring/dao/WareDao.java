@@ -13,31 +13,31 @@ import java.util.List;
 @Mapper
 public interface WareDao {
 
-    void deleteWareById(String id);
+    void deleteWareById(Integer id);
     void insertWare(Ware ware);
-    Ware selectWare(String id);
+    Ware selectWare(Integer id);
     List<Ware> selectAllWare();
     List<Ware> selectWareByPage(HashMap<String,Object> map);
     int selectCountByWare();
    void updateWare(Ware ware);
-   Ware selectWareById(String id);
-    int deleteByPrimaryKey(String id);
+   Ware selectWareById(Integer id);
+    int deleteByPrimaryKey(Integer id);
 
     int insert(Ware record);
 
     int insertSelective(Ware record);
 
-    Ware selectByPrimaryKey(String id);
+    Ware selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Ware record);
 
     int updateByPrimaryKey(Ware record);
 
-    List<User> wareLeader(String id);
+    List<User> wareLeader(Integer id);
 
     Ware selectWareByName(String name);
 
     List<String> selectWareByUserName(String username);
 
-    int countWareWithKey(@Param("keyWord") String keyWord);
+    int countWareWithKey(@Param("keyWord") String keyWord,@Param("username") String username,@Param("userRole") Integer userRole);
 }

@@ -29,7 +29,7 @@ public class WareServiceImpl implements WareService {
     }
 
     @Override
-    public void deleteWareById(String id) {
+    public void deleteWareById(int id) {
         userDao.updateUserByWareId(id);
         wareDao.deleteByPrimaryKey(id);
     }
@@ -40,12 +40,12 @@ public class WareServiceImpl implements WareService {
     }
 
     @Override
-    public Ware selectWareById(String id) {
+    public Ware selectWareById(int id) {
         return wareDao.selectWareById(id);
     }
 
     @Override
-    public List<User> wareLeader(String id) {
+    public List<User> wareLeader(int id) {
         return wareDao.wareLeader(id);
     }
 
@@ -55,7 +55,7 @@ public class WareServiceImpl implements WareService {
     }
 
     @Override
-    public Ware selectWare(String id) {
+    public Ware selectWare(int id) {
         return wareDao.selectWare(id);
     }
 
@@ -68,9 +68,10 @@ public class WareServiceImpl implements WareService {
     public List<Ware> selectAllWare() {
         return wareDao.selectAllWare();
     }
+
     @Override
-    public PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc,String keyWord) {
-        HashMap<String,Object> map = new HashMap<>();
+    public PageBean<WareVO> selectWareByPage(int size, int page, String sort, String asc, String keyWord, User user) {
+        HashMap<String, Object> map = new HashMap<>();
         PageBean<WareVO> pageBean = new PageBean<>();
         //封装当前页数
         pageBean.setCurrPage(page);
@@ -82,17 +83,22 @@ public class WareServiceImpl implements WareService {
         pageBean.setPageAsc(asc);
 
         //封装总记录数
-        int totalCount = wareDao.countWareWithKey(keyWord);
+        int totalCount = wareDao.countWareWithKey(keyWord, user.getUsername(), user.getAuthority());
         pageBean.setTotalCount(totalCount);
 
         //封装总页数
-        double num =Math.ceil((double) totalCount / size);//向上取整
+        double num = Math.ceil((double) totalCount / size);//向上取整
         pageBean.setTotalPage((int) num);
 
-        map.put("PageStart",(page-1)*size);
+        map.put("PageStart", (page - 1) * size);
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
+        map.put("keyWord", keyWord == null ? "": keyWord);
+        //普通管理员只能查询到身为管理员的仓库
+        map.put("username", user.getUsername());
+        map.put("userRole", user.getAuthority());
+
 
         //封装每页显示的数据
         List<Ware> lists = wareDao.selectWareByPage(map);
@@ -106,11 +112,11 @@ public class WareServiceImpl implements WareService {
             wareVO.setWare_type(x.getWare_type());
             wareVO.setState(x.getState());
             String manageName = wareLeader(x.getId()).stream().map(User::getUsername)
-                                           .collect(Collectors.joining(","));
+                                                     .collect(Collectors.joining(","));
             wareVO.setManageName(manageName);
             return wareVO;
         })
-                                    .collect(Collectors.toList());
+                                       .collect(Collectors.toList());
 
 
         pageBean.setLists(wareVOList);

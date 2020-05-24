@@ -11,13 +11,21 @@ public class User {
     private int salary;
     private String remark;
     private int authority;
-    private String ware_id;
+    private int ware_id;
 
-    public String getWare_id() {
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+    public int getWare_id() {
         return ware_id;
     }
 
-    public void setWare_id(String ware_id) {
+    public void setWare_id(int ware_id) {
         this.ware_id = ware_id;
     }
 

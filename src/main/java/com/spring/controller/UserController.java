@@ -262,10 +262,7 @@ public class UserController {
                                      @RequestParam(value = "asc", required = false,defaultValue = "asc") String asc
     ) throws IOException {
         ResponseEntity responseData;
-        PageBean<User> pagemsg = userService.selectUserByPage(size, page, sort, asc);
-        if (StringUtils.isNotBlank(keyWord)) pagemsg.setLists(
-                pagemsg.getLists().stream().filter(x -> x.getUsername().contains(keyWord))
-                       .collect(Collectors.toList()));
+        PageBean<User> pagemsg = userService.selectUserByPage(size, page, sort, asc,keyWord);
         responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;

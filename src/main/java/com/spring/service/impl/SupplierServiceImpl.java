@@ -23,8 +23,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void deleteSupplier(String id) {
-        supplierDao.deleteSupplier(id);
+    public void deleteSupplier(Integer id) {
+        supplierDao.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -33,17 +33,17 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Supplier selectSupplier(String id) {
+    public Supplier selectSupplier(Integer id) {
         return supplierDao.selectSupplier(id);
     }
 
     @Override
-    public Supplier selectSupplierById(String id) {
+    public Supplier selectSupplierById(Integer id) {
         return supplierDao.selectSupplierById(id);
     }
 
     @Override
-    public PageBean<Supplier> selectSupplierByPage(int size, int page, String sort, String asc) {
+    public PageBean<Supplier> selectSupplierByPage(int size, int page, String sort, String asc,String keyWord) {
         HashMap<String,Object> map = new HashMap<String,Object>();
         PageBean<Supplier> pageBean = new PageBean<Supplier>();
         //封装当前页数
@@ -62,17 +62,17 @@ public class SupplierServiceImpl implements SupplierService {
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
+        map.put("keyWord", keyWord == null ? "": keyWord);
 
         //封装每页显示的数据
         List<Supplier> lists = supplierDao.selectSupplierByPage(map);
         //封装总记录数
-        int totalCount = supplierDao.selectCountBySupplier();
+        int totalCount = supplierDao.countSupplierWithKey(keyWord);
         pageBean.setTotalCount(totalCount);
 
         //封装总页数
-        double tc = totalCount;
-        Double num =Math.ceil(tc/size);//向上取整
-        pageBean.setTotalPage(num.intValue());
+        double num =Math.ceil((double) totalCount / size);//向上取整
+        pageBean.setTotalPage((int) num);
         pageBean.setLists(lists);
         return pageBean;
     }

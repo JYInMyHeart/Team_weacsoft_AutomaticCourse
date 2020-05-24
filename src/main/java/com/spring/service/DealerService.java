@@ -5,11 +5,11 @@ import com.spring.entity.PageBean;
 
 public interface DealerService {
     void insertDealer(Dealer dealer);
-    void deleteDealer(String id);
+    void deleteDealer(Integer id);
     void updateDealer(Dealer dealer);
-    Dealer selectDealer(String id);
-    Dealer selectDealerById(String id);
-    PageBean<Dealer> selectDealerByPage(int size, int page, String sort, String asc);
+    Dealer selectDealer(Integer id);
+    Dealer selectDealerById(Integer id);
+    PageBean<Dealer> selectDealerByPage(int size, int page, String sort, String asc,String keyWord);
     int selectCountByDealer();
 
     Dealer selectDealerNyName(String s);

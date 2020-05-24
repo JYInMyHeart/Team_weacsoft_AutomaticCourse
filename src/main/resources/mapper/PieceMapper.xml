@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.spring.dao.PieceDao">
   <resultMap id="BaseResultMap" type="com.spring.entity.Piece">
-    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="id" property="id" jdbcType="INTEGER"/>
     <result column="piece_name" property="piece_name" jdbcType="VARCHAR"/>
     <result column="scc" property="scc" jdbcType="VARCHAR"/>
     <result column="help_code" property="help_code" jdbcType="VARCHAR"/>
@@ -10,7 +10,7 @@
     <result column="inventory" property="inventory" jdbcType="INTEGER"/>
     <result column="state" property="state" jdbcType="VARCHAR"/>
     <result column="run_date" property="run_date"/>
-    <result column="ware_id" property="ware_id" jdbcType="VARCHAR"/>
+    <result column="ware_id" property="ware_id" jdbcType="INTEGER"/>
   </resultMap>
   <insert id="insertPiece" parameterType="Piece">
     insert into piece (id, piece_name, scc, help_code, price, inventory, state, run_date, ware_id)
@@ -24,7 +24,17 @@
   <select id="selectPieceByPage" parameterType="Map" resultType="com.spring.entity.PieceVo">
     select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name as ware_name
     from piece p
-    left join ware w on w.id = p.ware_id
+    left join ware w on w.id = p.ware_id where 1 = 1
+    <if test="keyWord != null and keyWord != ''">
+      and p.piece_name like concat('%',#{keyWord},'%') or w.name like concat('%',#{keyWord},'%') or p.help_code like concat('%',#{keyWord},'%')
+    </if>
+    <if test="userRole != null and userRole == 1">
+     and w.name in (select ware.name
+      from ware,
+      manage_user
+      where ware.id = manage_user.ware_id
+      and username = #{username})
+    </if>
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}
@@ -98,12 +108,12 @@
     select
     <include refid="Base_Column_List"/>
     from piece
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--@mbg.generated-->
     delete from piece
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="Piece">
     <!--@mbg.generated-->
@@ -111,9 +121,9 @@
     help_code, price, inventory,
     `state`, run_date, ware_id
     )
-    values (#{id,jdbcType=VARCHAR}, #{piece_name,jdbcType=VARCHAR}, #{scc,jdbcType=VARCHAR},
+    values (#{id,jdbcType=INTEGER}, #{piece_name,jdbcType=VARCHAR}, #{scc,jdbcType=VARCHAR},
     #{help_code,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, #{inventory,jdbcType=INTEGER},
-    #{state,jdbcType=VARCHAR}, #{run_date,jdbcType=DATE}, #{ware_id,jdbcType=VARCHAR}
+    #{state,jdbcType=VARCHAR}, #{run_date,jdbcType=DATE}, #{ware_id,jdbcType=INTEGER}
     )
   </insert>
   <insert id="insertSelective" parameterType="Piece">
@@ -150,7 +160,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="piece_name != null">
         #{piece_name,jdbcType=VARCHAR},
@@ -174,7 +184,7 @@
         #{run_date,jdbcType=DATE},
       </if>
       <if test="ware_id != null">
-        #{ware_id,jdbcType=VARCHAR},
+        #{ware_id,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -204,7 +214,7 @@
         run_date = #{run_date,jdbcType=DATE},
       </if>
       <if test="ware_id != null">
-        ware_id = #{ware_id,jdbcType=VARCHAR},
+        ware_id = #{ware_id,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -219,8 +229,8 @@
     inventory = #{inventory,jdbcType=INTEGER},
     `state` = #{state,jdbcType=VARCHAR},
     run_date = #{run_date,jdbcType=DATE},
-    ware_id = #{ware_id,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+    ware_id = #{ware_id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectBySupplier" parameterType="Map" resultType="com.spring.entity.PieceVo">
     select p.id, p.piece_name, p.scc, p.help_code, p.price, p.inventory, p.state, p.run_date, w.name
@@ -232,7 +242,9 @@
     left join supplier s on s.id = sp.supplier_id
     left join dealer_piece dp on dp.piece_id = p.id
     left join dealer d on d.id = dp.dealer_id
-    where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+    <if test="supplierName != null and supplierName != ''">
+      where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+    </if>
     group by p.id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
@@ -249,7 +261,10 @@
     left join dealer d on d.id = dp.dealer_id
     left join supplier_piece sp on p.id = sp.piece_id
     left join supplier s on sp.supplier_id = s.id
-    where d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%') group by p.id
+    <if test="dealerName != null and dealerName != ''">
+    where d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%')
+    </if>
+    group by p.id
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}
@@ -258,19 +273,25 @@
   <delete id="deleteSupplier">
     delete
     from supplier_piece
-    where piece_id = #{id,jdbcType=VARCHAR}
+    where piece_id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteDealer">
     delete
     from dealer_piece
-    where piece_id = #{id,jdbcType=VARCHAR}
+    where piece_id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="addSupplier">
     insert into supplier_piece
-    values (#{supplierId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR})
+    values (#{supplierId,jdbcType=INTEGER}, #{id,jdbcType=INTEGER})
   </insert>
   <insert id="addDealer">
     insert into dealer_piece
-    values (#{dealerId,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR})
+    values (#{dealerId,jdbcType=INTEGER}, #{id,jdbcType=INTEGER})
   </insert>
+  <select id="selectAllPiece" resultMap="BaseResultMap">
+    select * from piece
+  </select>
+  <select id="selectPieceByName" resultMap="BaseResultMap">
+    select * from piece where piece_name = #{piece_name,jdbcType=VARCHAR}
+  </select>
 </mapper>

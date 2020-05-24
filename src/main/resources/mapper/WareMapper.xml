@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.spring.dao.WareDao">
   <resultMap id="BaseResultMap" type="com.spring.entity.Ware">
-    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="id" property="id" jdbcType="INTEGER"/>
     <result column="site" property="site" jdbcType="VARCHAR"/>
     <result column="area" property="area" jdbcType="VARCHAR"/>
     <result column="ware_type" property="ware_type" jdbcType="INTEGER"/>
@@ -20,8 +20,17 @@
     where id = #{id}
   </select>
   <select id="selectWareByPage" parameterType="Map" resultMap="BaseResultMap">
-    select *
-    from ware
+    select w.*
+    from manage_user u right join
+    ware w
+    on u.ware_id = w.id where 1= 1
+    <if test="userRole != null and userRole == 1">
+      and u.username = #{username,jdbcType=VARCHAR}
+    </if>
+    <if test="keyWord != null and keyWord != ''">
+      and (name like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+      or site like concat('%', #{keyWord,jdbcType=VARCHAR}, '%'))
+    </if>
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}
@@ -61,19 +70,19 @@
     select
     <include refid="Base_Column_List"/>
     from ware
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id ,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--@mbg.generated-->
     delete from ware
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id ,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="Ware">
     <!--@mbg.generated-->
     insert into ware (id, site, area,
     ware_type, run_date, `state`,
     `name`)
-    values (#{id,jdbcType=VARCHAR}, #{site,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR},
+    values (#{id ,jdbcType=INTEGER}, #{site,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR},
     #{ware_type,jdbcType=INTEGER}, #{run_date,jdbcType=DATE}, #{state,jdbcType=VARCHAR},
     #{name,jdbcType=VARCHAR})
   </insert>
@@ -105,7 +114,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+        #{id ,jdbcType=INTEGER},
       </if>
       <if test="site != null">
         #{site,jdbcType=VARCHAR},
@@ -150,7 +159,7 @@
         `name` = #{name,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id ,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="Ware">
     <!--@mbg.generated-->
@@ -161,14 +170,14 @@
     run_date = #{run_date,jdbcType=DATE},
     `state` = #{state,jdbcType=VARCHAR},
     `name` = #{name,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id ,jdbcType=INTEGER}
   </update>
   <select id="wareLeader" resultType="com.spring.entity.User">
     select u.*
     from manage_user u,
          ware w
     where u.ware_id = w.id
-      and w.id = #{id,jdbcType=VARCHAR}
+      and w.id = #{id ,jdbcType=INTEGER}
   </select>
   <select id="selectWareByName" resultMap="BaseResultMap">
     select *
@@ -183,14 +192,20 @@
       and username = #{username,jdbcType=VARCHAR}
   </select>
   <select id="countWareWithKey" resultType="int">
-    select count(id)
-    from ware
+    select count(w.id)
+    from manage_user u right join
+    ware w
+    on u.ware_id = w.id where 1= 1
+    <if test="userRole == 1">
+      and u.username = #{username,jdbcType=VARCHAR}
+    </if>
     <if test="keyWord != null and keyWord != ''">
-      where name like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
-      or site like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+      and (name like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+      or site like concat('%', #{keyWord,jdbcType=VARCHAR}, '%'))
     </if>
   </select>
   <select id="selectAllWare" resultMap="BaseResultMap">
-    select * from ware
+    select *
+    from ware
   </select>
 </mapper>

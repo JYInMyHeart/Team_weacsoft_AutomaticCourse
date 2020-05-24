@@ -59,12 +59,12 @@ public class WareController {
             responseData.putDataValue("timestamp", MyUtil.getTime());
             return responseData;
         }
-        ware.setId(StringUtils.isBlank(ware.getId()) ? UUID.randomUUID().toString() : ware.getId());
         responseData = ResponseEntity.ok();
         Ware w = new Ware();
         BeanUtils.copyProperties(ware,w);
         wareService.insertWare(w);
-        userService.setManageName(ware.getManageName(),ware.getId());
+        Ware wareForId = wareService.selectWareByName(w.getName());
+        userService.setManageName(ware.getManageName(),wareForId.getId());
         responseData.putDataValue("msg", "添加成功");
         return responseData;
     }
@@ -97,22 +97,7 @@ public class WareController {
         }
         String token = LoginInterceptor.globalToken;
         User user = JwtToken.unsign(token, User.class);
-        PageBean<WareVO> pagemsg = wareService.selectWareByPage(size, page, sort, asc,keyWord);
-        if (StringUtils.isNotBlank(keyWord)) {
-            pagemsg.setLists(
-                    pagemsg.getLists().stream()
-                           .filter(x -> x.getName().contains(keyWord) || x.getSite().contains(keyWord)).collect(
-                            Collectors.toList())
-                           );
-        }
-        //普通管理员只能查询到身为管理员的仓库
-        if(user != null && user.getAuthority() == 1){
-            pagemsg.setLists(
-                    pagemsg.getLists().stream()
-                           .filter(x -> x.getManageName().contains(user.getUsername())).collect(
-                            Collectors.toList())
-            );
-        }
+        PageBean<WareVO> pagemsg = wareService.selectWareByPage(size, page, sort, asc,keyWord,user);
         responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;
@@ -129,7 +114,7 @@ public class WareController {
      */
     @GetMapping("/web/wareLeader")
     @ResponseBody
-    public ResponseEntity wareLeader(@RequestParam String id) throws Exception {
+    public ResponseEntity wareLeader(@RequestParam int id) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -152,7 +137,7 @@ public class WareController {
      */
     @GetMapping("/web/selectWareById")
     @ResponseBody
-    public ResponseEntity selectWareById(@RequestParam String id) throws Exception {
+    public ResponseEntity selectWareById(@RequestParam int id) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -199,7 +184,7 @@ public class WareController {
      */
     @GetMapping("/web/delete")
     @ResponseBody
-    public ResponseEntity deleteWare(@RequestParam String id) throws IOException {
+    public ResponseEntity deleteWare(@RequestParam int id) throws IOException {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();

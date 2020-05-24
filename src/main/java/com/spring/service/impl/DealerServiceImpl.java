@@ -24,8 +24,8 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public void deleteDealer(String id) {
-         dealerDao.deleteDealer(id);
+    public void deleteDealer(Integer id) {
+         dealerDao.deleteByPrimaryKey(id);
     }
 
     @Override
@@ -34,17 +34,17 @@ public class DealerServiceImpl implements DealerService {
     }
 
     @Override
-    public Dealer selectDealer(String id) {
+    public Dealer selectDealer(Integer id) {
         return dealerDao.selectDealer(id);
     }
 
     @Override
-    public Dealer selectDealerById(String id) {
+    public Dealer selectDealerById(Integer id) {
         return dealerDao.selectDealerById(id);
     }
 
     @Override
-    public PageBean<Dealer> selectDealerByPage(int size, int page, String sort, String asc) {
+    public PageBean<Dealer> selectDealerByPage(int size, int page, String sort, String asc,String keyWord) {
         HashMap<String,Object> map = new HashMap<String,Object>();
         PageBean<Dealer> pageBean = new PageBean<Dealer>();
         //封装当前页数
@@ -63,11 +63,12 @@ public class DealerServiceImpl implements DealerService {
         map.put("PageSize", pageBean.getPageSize());
         map.put("PageSort", sort);
         map.put("PageAsc", asc);
+        map.put("keyWord", keyWord == null ? "": keyWord);
 
         //封装每页显示的数据
         List<Dealer> lists = dealerDao.selectDealerByPage(map);
         //封装总记录数
-        int totalCount = dealerDao.selectCountByDealer();
+        int totalCount = dealerDao.countDealerWithKey(keyWord);
         pageBean.setTotalCount(totalCount);
 
         //封装总页数

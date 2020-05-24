@@ -9,7 +9,7 @@ public class Ware {
     /**
     * 仓库id
     */
-    private String id;
+    private int id;
 
     /**
     * 地址
@@ -41,11 +41,11 @@ public class Ware {
     */
     private String name;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -3,7 +3,7 @@ package com.spring.entity;
 import java.util.Date;
 
 public class Piece {
-    private String id;
+    private int id;
     private String piece_name;
     private String scc;
     private String help_code;
@@ -11,15 +11,9 @@ public class Piece {
     private int inventory;
     private String state;
     private Date run_date;
-    private String ware_id;
+    private int ware_id;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getPiece_name() {
         return piece_name;
@@ -78,13 +72,19 @@ public class Piece {
     }
 
 
-    public String getWare_id() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getWare_id() {
         return ware_id;
     }
 
-    public void setWare_id(String ware_id) {
+    public void setWare_id(int ware_id) {
         this.ware_id = ware_id;
     }
-
-
 }

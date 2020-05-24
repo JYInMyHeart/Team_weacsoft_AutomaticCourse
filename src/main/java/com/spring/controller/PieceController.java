@@ -1,7 +1,6 @@
 package com.spring.controller;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.entity.Dealer;
 import com.spring.entity.PageBean;
 import com.spring.entity.Piece;
@@ -73,13 +72,13 @@ public class PieceController {
         }
 
         responseData = ResponseEntity.ok();
-        pieceVo.setId(
-                StringUtils.isBlank(pieceVo.getId())? UUID.randomUUID().toString() : pieceVo.getId());
         Piece piece = new Piece();
         BeanUtils.copyProperties(pieceVo, piece);
-        String wareId = wareService.selectWareByName(pieceVo.getWare_name()).getId();
+        int wareId = wareService.selectWareByName(pieceVo.getWare_name()).getId();
         piece.setWare_id(wareId);
         pieceService.insertPiece(piece);
+        Piece p = pieceService.selectPieceByName(piece.getPiece_name());
+        pieceVo.setId(p.getId());
         updateSupplierAndDealer(pieceVo);
         responseData.putDataValue("msg", "添加成功");
         return responseData;
@@ -105,30 +104,10 @@ public class PieceController {
                                       @RequestParam(value = "keyWord", required = false) String keyWord)
             throws IOException {
         ResponseEntity responseData;
-        PageBean<PieceVo> pagemsg = pieceService.selectPieceByPage(size, page, sort, asc);
-        responseData = ResponseEntity.ok();
         String token = LoginInterceptor.globalToken;
         User user = JwtToken.unsign(token, User.class);
-        if (StringUtils.isNotBlank(keyWord)) {
-            pagemsg.setLists(
-                    pagemsg.getLists().stream()
-                           .filter(x -> x.getHelp_code().contains(keyWord) || x.getPiece_name().contains(keyWord) ||
-                                        x.getWare_name().contains(keyWord))
-                           .collect(Collectors.toList()));
-        }
-        if(user != null && user.getAuthority() == 1){
-            List<String> list = wareService.selectWareByUserName(user.getUsername());
-            if(CollectionUtils.isNotEmpty(list)){
-                pagemsg.setLists(
-                        pagemsg.getLists().stream()
-                               .filter(x -> x.getWare_name().contains(list.get(0))).collect(
-                                Collectors.toList())
-                );
-            }else{
-                pagemsg.setLists(new ArrayList<>());
-            }
-
-        }
+        PageBean<PieceVo> pagemsg = pieceService.selectPieceByPage(size, page, sort, asc,keyWord,user);
+        responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;
     }
@@ -142,7 +121,7 @@ public class PieceController {
      */
     @GetMapping("/web/selectById")
     @ResponseBody
-    public ResponseEntity selectPieceById(@RequestParam String id) throws Exception {
+    public ResponseEntity selectPieceById(@RequestParam int id) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -230,7 +209,7 @@ public class PieceController {
         responseData = ResponseEntity.ok();
         Piece piece = new Piece();
         BeanUtils.copyProperties(pieceVo, piece);
-        String wareId = wareService.selectWareByName(pieceVo.getWare_name()).getId();
+        int wareId = wareService.selectWareByName(pieceVo.getWare_name()).getId();
         updateSupplierAndDealer(pieceVo);
         piece.setWare_id(wareId);
         //修改信息
@@ -261,7 +240,7 @@ public class PieceController {
      */
     @GetMapping("/web/delete")
     @ResponseBody
-    public ResponseEntity deletePiece(@RequestParam(required = false) String id) throws IOException {
+    public ResponseEntity deletePiece(@RequestParam(required = false) int id) throws IOException {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();

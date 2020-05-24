@@ -53,7 +53,6 @@ public class DealerController {
         }
 
         responseData = ResponseEntity.ok();
-        dealer.setId(UUID.randomUUID().toString());
         dealerService.insertDealer(dealer);
         responseData.putDataValue("msg", "添加成功");
         return responseData;
@@ -85,13 +84,7 @@ public class DealerController {
             responseData.putDataValue("timestamp", MyUtil.getTime());
             return responseData;
         }
-        PageBean<Dealer> pagemsg = dealerService.selectDealerByPage(size, page, sort, asc);
-        if (StringUtils.isNotBlank(keyWord)) {
-            pagemsg.setLists(
-                    pagemsg.getLists().stream()
-                           .filter(x -> x.getName().contains(keyWord))
-                           .collect(Collectors.toList()));
-        }
+        PageBean<Dealer> pagemsg = dealerService.selectDealerByPage(size, page, sort, asc,keyWord);
         responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;
@@ -107,7 +100,7 @@ public class DealerController {
      */
     @GetMapping("/web/selectById")
     @ResponseBody
-    public ResponseEntity selectDealerById(@RequestParam String id) throws Exception {
+    public ResponseEntity selectDealerById(@RequestParam int id) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -153,7 +146,7 @@ public class DealerController {
      */
     @GetMapping("/web/delete")
     @ResponseBody
-    public ResponseEntity deleteDealer(@RequestParam String id) throws IOException {
+    public ResponseEntity deleteDealer(@RequestParam int id) throws IOException {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();

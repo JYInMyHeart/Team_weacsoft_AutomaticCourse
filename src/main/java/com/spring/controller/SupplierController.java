@@ -53,7 +53,6 @@ public class SupplierController {
         }
 
         responseData = ResponseEntity.ok();
-        supplier.setId(UUID.randomUUID().toString());
         supplierService.insertSupplier(supplier);
         responseData.putDataValue("msg", "添加成功");
         return responseData;
@@ -85,13 +84,7 @@ public class SupplierController {
             responseData.putDataValue("timestamp", MyUtil.getTime());
             return responseData;
         }
-        PageBean<Supplier> pagemsg = supplierService.selectSupplierByPage(size, page, sort, asc);
-        if (StringUtils.isNotBlank(keyWord)) {
-            pagemsg.setLists(
-                    pagemsg.getLists().stream()
-                           .filter(x -> x.getName().contains(keyWord))
-                           .collect(Collectors.toList()));
-        }
+        PageBean<Supplier> pagemsg = supplierService.selectSupplierByPage(size, page, sort, asc,keyWord);
         responseData = ResponseEntity.ok();
         responseData.putDataValue("records", pagemsg);
         return responseData;
@@ -107,7 +100,7 @@ public class SupplierController {
      */
     @GetMapping("/web/selectById")
     @ResponseBody
-    public ResponseEntity selectSupplierById(@RequestParam String id) throws Exception {
+    public ResponseEntity selectSupplierById(@RequestParam int id) throws Exception {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();
@@ -153,7 +146,7 @@ public class SupplierController {
      */
     @GetMapping("/web/delete")
     @ResponseBody
-    public ResponseEntity deleteSupplier(@RequestParam String id) throws IOException {
+    public ResponseEntity deleteSupplier(@RequestParam int id) throws IOException {
         ResponseEntity responseData = null;
         if (authority()) {
             responseData = ResponseEntity.badRequest();

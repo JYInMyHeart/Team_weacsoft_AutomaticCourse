@@ -11,7 +11,7 @@ import java.util.Date;
  * @Time: 11:06 2020/5/23
  */
 public class PieceVo implements Serializable {
-    private String id;
+    private int id;
     private String piece_name;
     private String scc;
     private String help_code;
@@ -40,11 +40,11 @@ public class PieceVo implements Serializable {
         this.dealer_name = dealer_name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

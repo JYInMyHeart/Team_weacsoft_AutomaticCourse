@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.spring.dao.SupplierDao">
   <resultMap id="BaseResultMap" type="com.spring.entity.Supplier">
-    <result column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="id" property="id" jdbcType="INTEGER"/>
     <result column="name" property="name" jdbcType="VARCHAR"/>
     <result column="phone" property="phone" jdbcType="VARCHAR"/>
     <result column="state" property="state" jdbcType="VARCHAR"/>
@@ -19,7 +19,10 @@
   </select>
   <select id="selectSupplierByPage" parameterType="Map" resultMap="BaseResultMap">
     select *
-    from supplier
+    from supplier where 1 = 1
+    <if test="keyWord != null and keyWord != ''">
+      and name like concat('%',#{keyWord},'%')
+    </if>
     <if test="PageStart!=null and PageSize!=null and PageSort!=null and PageAsc!=null">
       ORDER BY #{PageSort} #{PageAsc}
       limit #{PageStart},#{PageSize}
@@ -61,18 +64,18 @@
     select
     <include refid="Base_Column_List" />
     from supplier
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--@mbg.generated-->
     delete from supplier
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="Supplier">
     <!--@mbg.generated-->
     insert into supplier (id, `name`, phone,
     `state`, notes)
-    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
     #{state,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="Supplier">
@@ -97,7 +100,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -130,7 +133,7 @@
         notes = #{notes,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="Supplier">
     <!--@mbg.generated-->
@@ -139,6 +142,14 @@
     phone = #{phone,jdbcType=VARCHAR},
     `state` = #{state,jdbcType=VARCHAR},
     notes = #{notes,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="countSupplierWithKey" resultType="int">
+    select count(id)
+    from supplier
+    <if test="keyWord != null and keyWord != ''">
+      where name like concat('%', #{keyWord,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
 </mapper>
