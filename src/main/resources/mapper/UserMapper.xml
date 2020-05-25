@@ -156,9 +156,6 @@
       <if test="authority != null">
         authority = #{authority,jdbcType=INTEGER},
       </if>
-      <if test="ware_id != null">
-        ware_id = #{ware_id,jdbcType=INTEGER},
-      </if>
     </set>
     where identityID = #{identityID,jdbcType=VARCHAR}
   </update>
@@ -173,8 +170,7 @@
     phone = #{phone,jdbcType=VARCHAR},
     salary = #{salary,jdbcType=INTEGER},
     remark = #{remark,jdbcType=VARCHAR},
-    authority = #{authority,jdbcType=INTEGER},
-    ware_id = #{ware_id,jdbcType=INTEGER}
+    authority = #{authority,jdbcType=INTEGER}
     where identityID = #{identityID,jdbcType=VARCHAR}
   </update>
   <update id="setManageName">
