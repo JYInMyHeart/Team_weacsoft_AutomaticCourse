@@ -89,9 +89,7 @@
       <if test="authority != null">
         authority,
       </if>
-      <if test="ware_id != null and ware_id != 0">
-        ware_id,
-      </if>
+        ware_id
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="identityID != null">
@@ -124,9 +122,7 @@
       <if test="authority != null">
         #{authority,jdbcType=INTEGER},
       </if>
-      <if test="ware_id != null and ware_id != 0 ">
-        #{ware_id,jdbcType=INTEGER},
-      </if>
+      null
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="User">
@@ -190,7 +186,7 @@
   </update>
   <update id="updateUserByWareId">
     update manage_user
-    set ware_id = 0
+    set ware_id = null
     where ware_id = #{id,jdbcType=INTEGER}
   </update>
 

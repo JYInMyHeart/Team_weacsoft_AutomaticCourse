@@ -28,7 +28,7 @@
     left join manage_user mu on w.id = mu.ware_id
     where 1 = 1
     <if test="keyWord != null and keyWord != ''">
-      and p.piece_name like concat('%',#{keyWord},'%') or w.name like concat('%',#{keyWord},'%') or p.help_code like concat('%',#{keyWord},'%')
+      and (p.piece_name like concat('%',#{keyWord},'%') or w.name like concat('%',#{keyWord},'%') or p.help_code like concat('%',#{keyWord},'%'))
     </if>
     <if test="userRole != null and userRole == 1">
       and username = #{username}
@@ -241,8 +241,9 @@
     left join supplier s on s.id = sp.supplier_id
     left join dealer_piece dp on dp.piece_id = p.id
     left join dealer d on d.id = dp.dealer_id
+    where 1= 1
     <if test="supplierName != null and supplierName != ''">
-      where s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
+      and s.name like CONCAT('%',#{supplierName,jdbcType=VARCHAR},'%')
     </if>
     <if test="userRole != null and userRole == 1">
       and username = #{username}
@@ -264,8 +265,9 @@
     left join dealer d on d.id = dp.dealer_id
     left join supplier_piece sp on p.id = sp.piece_id
     left join supplier s on sp.supplier_id = s.id
+    where 1 = 1
     <if test="dealerName != null and dealerName != ''">
-    where d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%')
+     and d.name like CONCAT('%',#{dealerName,jdbcType=VARCHAR},'%')
     </if>
     <if test="userRole != null and userRole == 1">
       and username = #{username}
