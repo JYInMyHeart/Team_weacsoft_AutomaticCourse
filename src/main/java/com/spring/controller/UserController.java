@@ -41,7 +41,6 @@ public class UserController {
      *
      * @param identityID
      * @param password
-     * @param httpSession
      * @return
      * @throws UnsupportedEncodingException
      * @throws JsonProcessingException
@@ -49,16 +48,16 @@ public class UserController {
     @PostMapping("/web/login")
     @ResponseBody
     public ResponseEntity login(@RequestParam String identityID,
-                                @RequestParam String password, HttpSession httpSession)
+                                @RequestParam String password)
             throws UnsupportedEncodingException, JsonProcessingException {
         ResponseEntity responseEntity = ResponseEntity.ok();
         User userFromBase = userService.selectUserByIdentityId(identityID);
-        if (userFromBase.getIdentityID().equals(identityID) &&
+        if (userFromBase != null && userFromBase.getIdentityID().equals(identityID) &&
             userFromBase.getPassword().equals(password)) {
             //给用户jwt加密生成token
             String token = JwtToken.sign(userFromBase, 60L * 1000L * 30L);//sign()方法是static修饰的，所以直接用类名调用，不需要创建对象
             //封装成对象返回给客户端
-            responseEntity.putDataValue("userId", userFromBase
+            responseEntity.putDataValue("username", userFromBase
                     .getIdentityID());//调用ResponseEntity类的putDataValue方法将userID和token放进map中然后返回
             responseEntity.putDataValue("token", token);
             responseEntity.putDataValue("userRole", userFromBase.getAuthority());
